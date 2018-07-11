@@ -1,0 +1,10 @@
+INSERT INTO customer  VALUES (1,'Reed','Edwards'); 
+INSERT INTO customer  VALUES (2,'Hoyt','Park'); 
+INSERT INTO customer  VALUES (3,'Leila','Petty'); 
+INSERT INTO customer  VALUES (4,'Denton','Strong'); 
+INSERT INTO customer  VALUES (5,'Zoe','Romero'); 
+INSERT INTO customer  VALUES (6,'Rana','Compton'); 
+INSERT INTO customer  VALUES (7,'Velma','King'); 
+INSERT INTO customer  VALUES (8,'Uriah','Carter'); 
+INSERT INTO customer  VALUES (9,'Michael','Graves'); 
+INSERT INTO customer  VALUES (10,'Leigh','Stone');
