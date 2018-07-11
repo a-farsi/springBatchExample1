@@ -16,7 +16,7 @@
 package io.spring.batch.configuration;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
+//import javax.annotation.Resource;
 import javax.sql.DataSource;
 
 import org.springframework.batch.core.Job;
@@ -31,7 +31,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
-import org.springframework.web.context.WebApplicationContext;
+//import org.springframework.web.context.WebApplicationContext;
 
 import io.spring.batch.domain.CnilTableRowMapper;
 import io.spring.batch.domain.Customer;

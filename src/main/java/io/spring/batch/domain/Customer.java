@@ -15,7 +15,7 @@
  */
 package io.spring.batch.domain;
 
-import java.util.Date;
+//import java.util.Date;
 
 /**
  * @author Michael Minella
