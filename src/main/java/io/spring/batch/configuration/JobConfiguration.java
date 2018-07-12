@@ -15,7 +15,6 @@
  */
 package io.spring.batch.configuration;
 
-import javax.annotation.PostConstruct;
 //import javax.annotation.Resource;
 import javax.sql.DataSource;
 
@@ -23,16 +22,15 @@ import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.DefaultResourceLoader;
-import org.springframework.core.io.ResourceLoader;
-import org.springframework.jdbc.datasource.init.ScriptUtils;
-//import org.springframework.web.context.WebApplicationContext;
 
+import io.spring.batch.domain.Administrateur;
+import io.spring.batch.domain.AdministrateurRowMapper;
 import io.spring.batch.domain.CnilTableRowMapper;
 import io.spring.batch.domain.Customer;
 import io.spring.batch.domain.CustomerRowMapper;
@@ -80,6 +78,18 @@ public class JobConfiguration {
 		return reader2;
 	}
 
+	@Bean
+	public JdbcCursorItemReader<Administrateur> cursorItemReaderForAdministrateur() {
+		JdbcCursorItemReader<Administrateur> reader = new JdbcCursorItemReader<>();
+
+		// reader.setSql("select id, firstName, lastName, birthdate from customer order
+		// by lastName, firstName");
+		reader.setSql("SELECT * FROM Administrateur ORDER BY numeroEmetteur");
+		reader.setDataSource(this.dataSource);
+		reader.setRowMapper(new AdministrateurRowMapper());
+
+		return reader;
+	}
 	
 	// @Bean
 	// public JdbcPagingItemReader<Customer> pagingItemReader() {
@@ -104,7 +114,7 @@ public class JobConfiguration {
 	// return reader;
 	// }
 
-	@Bean
+/*	@Bean
 	public ItemWriter<Customer> customerItemWriter() {
 		return items -> {
 			for (Customer item : items) {
@@ -120,9 +130,18 @@ public class JobConfiguration {
 				System.out.println(item.toString());
 			}
 		};
-	}
+	}*/
 
 	@Bean
+	public ItemWriter<Administrateur> administrateurItemWriter() {
+		return items -> {
+			for (Administrateur item : items) {
+				System.out.println(item.toString());
+			}
+		};
+	}
+	
+/*	@Bean
 	public Step step1() {
 		return stepBuilderFactory.get("step1")
 				.<Customer, Customer>chunk(10)
@@ -138,14 +157,27 @@ public class JobConfiguration {
 				.reader(cursorItemReaderForTable())
 				.writer(CnilParametrageTableItemWriter())
 				.build();
-	}
+	}*/
 
 
 	@Bean
+	public Step step3() {
+		return stepBuilderFactory.get("step3")
+				.<Administrateur, Administrateur>chunk(10)
+				.reader(cursorItemReaderForAdministrateur())
+				.writer(administrateurItemWriter())
+				.build();
+	}
+	@Bean
 	public Job job() {
-		return jobBuilderFactory.get("job").start(step1()).next(step2()).build();
+		//return jobBuilderFactory.get("job").start(step1()).next(step2()).build();
+		return jobBuilderFactory.get("job")
+				.incrementer(new RunIdIncrementer())// AFA added to generate different ids
+				.start(step3())
+				.build();
 	}
 
+	/*
 	private final String SAMPLE_DATA = "classpath:data_2.sql";
 	@Autowired
 	private DataSource datasource;
@@ -156,4 +188,5 @@ public class JobConfiguration {
 		org.springframework.core.io.Resource resource = resourceLoader.getResource(SAMPLE_DATA);
 		ScriptUtils.executeSqlScript(datasource.getConnection(), resource);
 	}
+*/
 }

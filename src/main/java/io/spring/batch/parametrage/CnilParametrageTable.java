@@ -7,24 +7,24 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Entity
-@Table(name="table_parametrage_cnil")
+//@Entity
+//@Table(name="table_parametrage_cnil")
 public class CnilParametrageTable {
-	@Id
+	/*@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(name="id")
+	@Column(name="id")*/
     private Long traitementTypeId; 
 	
-	@Column(name="type_traitement")
+	/*@Column(name="type_traitement")*/
 	private String processingType;
 	
-	@Column(name="libelle")
+	/*@Column(name="libelle")*/
 	private String label;
 	
-	@Column(name="nom_table")
+	/*@Column(name="nom_table")*/
 	private String tableName;
 	
-	@Column(name="nom_colonne")
+	/*@Column(name="nom_colonne")*/
 	private String columnName;
 	
 	public CnilParametrageTable() {
