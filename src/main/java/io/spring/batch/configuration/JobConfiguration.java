@@ -15,6 +15,8 @@
  */
 package io.spring.batch.configuration;
 
+import java.io.File;
+
 //import javax.annotation.Resource;
 import javax.sql.DataSource;
 
@@ -23,13 +25,15 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
-import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
+import org.springframework.batch.item.file.FlatFileItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.FileSystemResource;
 
 import io.spring.batch.domain.Administrateur;
+import io.spring.batch.domain.AdministrateurLineAggregator;
 import io.spring.batch.domain.AdministrateurRowMapper;
 import io.spring.batch.domain.CnilTableRowMapper;
 import io.spring.batch.domain.Customer;
@@ -37,7 +41,7 @@ import io.spring.batch.domain.CustomerRowMapper;
 import io.spring.batch.parametrage.CnilParametrageTable;
 
 /**
- * @author Michael Minella
+ * @author 
  */
 @Configuration
 public class JobConfiguration {
@@ -64,9 +68,8 @@ public class JobConfiguration {
 		return reader;
 	}
 
-	
 	@Bean
-	public JdbcCursorItemReader<CnilParametrageTable> cursorItemReaderForTable() {
+	public JdbcCursorItemReader<CnilParametrageTable> cursorItemReaderForCnilParametrageTable() {
 		JdbcCursorItemReader<CnilParametrageTable> reader2 = new JdbcCursorItemReader<>();
 
 		// reader.setSql("select id, firstName, lastName, birthdate from customer order
@@ -90,7 +93,19 @@ public class JobConfiguration {
 
 		return reader;
 	}
-	
+
+	@Bean
+	public JdbcCursorItemReader<Administrateur> cursorItemReaderForTable() {
+		JdbcCursorItemReader<Administrateur> reader = new JdbcCursorItemReader<>();
+
+		// reader.setSql("select id, firstName, lastName, birthdate from customer order
+		// by lastName, firstName");
+		reader.setSql("SELECT * FROM Administrateur ORDER BY numeroEmetteur");
+		reader.setDataSource(this.dataSource);
+		reader.setRowMapper(new AdministrateurRowMapper());
+
+		return reader;
+	}
 	// @Bean
 	// public JdbcPagingItemReader<Customer> pagingItemReader() {
 	// JdbcPagingItemReader<Customer> reader = new JdbcPagingItemReader<>();
@@ -114,24 +129,25 @@ public class JobConfiguration {
 	// return reader;
 	// }
 
-/*	@Bean
-	public ItemWriter<Customer> customerItemWriter() {
-		return items -> {
-			for (Customer item : items) {
-				System.out.println(item.toString());
-			}
-		};
-	}
+	/*	@Bean
+		public ItemWriter<Customer> customerItemWriter() {
+			return items -> {
+				for (Customer item : items) {
+					System.out.println(item.toString());
+				}
+			};
+		}
+	
+		@Bean
+		public ItemWriter<CnilParametrageTable> CnilParametrageTableItemWriter() {
+			return items -> {
+				for (CnilParametrageTable item : items) {
+					System.out.println(item.toString());
+				}
+			};
+		}*/
 
-	@Bean
-	public ItemWriter<CnilParametrageTable> CnilParametrageTableItemWriter() {
-		return items -> {
-			for (CnilParametrageTable item : items) {
-				System.out.println(item.toString());
-			}
-		};
-	}*/
-
+	/*
 	@Bean
 	public ItemWriter<Administrateur> administrateurItemWriter() {
 		return items -> {
@@ -139,38 +155,60 @@ public class JobConfiguration {
 				System.out.println(item.toString());
 			}
 		};
-	}
-	
-/*	@Bean
-	public Step step1() {
-		return stepBuilderFactory.get("step1")
-				.<Customer, Customer>chunk(10)
-				.reader(cursorItemReader())
-				.writer(customerItemWriter())
-				.build();
-	}
-	
-	@Bean
-	public Step step2() {
-		return stepBuilderFactory.get("step2")
-				.<CnilParametrageTable, CnilParametrageTable>chunk(10)
-				.reader(cursorItemReaderForTable())
-				.writer(CnilParametrageTableItemWriter())
-				.build();
 	}*/
 
+	@Bean
+	public FlatFileItemWriter<Administrateur> administrateurItemWriter() throws Exception {
+		FlatFileItemWriter<Administrateur> itemWriter = new FlatFileItemWriter<>();
+		// itemWriter.setLineAggregator(new PassThroughLineAggregator<>());
+		itemWriter.setLineAggregator(new AdministrateurLineAggregator());
+		String customerOutputPath = File.createTempFile("customerOutput", ".out").getAbsolutePath();
+		System.out.println(">> Output Path: " + customerOutputPath);
+		itemWriter.setResource(new FileSystemResource(customerOutputPath));
+		itemWriter.afterPropertiesSet();
+
+		return itemWriter;
+	}
+
+	/*	@Bean
+		public Step step1() {
+			return stepBuilderFactory.get("step1")
+					.<Customer, Customer>chunk(10)
+					.reader(cursorItemReader())
+					.writer(customerItemWriter())
+					.build();
+		}
+		
+		@Bean
+		public Step step2() {
+			return stepBuilderFactory.get("step2")
+					.<CnilParametrageTable, CnilParametrageTable>chunk(10)
+					.reader(cursorItemReaderForTable())
+					.writer(CnilParametrageTableItemWriter())
+					.build();
+		}*/
 
 	@Bean
-	public Step step3() {
+	public Step step3() throws Exception {
 		return stepBuilderFactory.get("step3")
-				.<Administrateur, Administrateur>chunk(10)
+				.<Administrateur, Administrateur> chunk(10)
 				.reader(cursorItemReaderForAdministrateur())
 				.writer(administrateurItemWriter())
 				.build();
 	}
+
 	@Bean
-	public Job job() {
-		//return jobBuilderFactory.get("job").start(step1()).next(step2()).build();
+	public Step step4() throws Exception {
+		return stepBuilderFactory.get("step4")
+				.<CnilParametrageTable, CnilParametrageTable> chunk(10)
+				.reader(cursorItemReaderForCnilParametrageTable())
+				.writer(administrateurItemWriter())
+				.build();
+	}
+
+	@Bean
+	public Job job() throws Exception {
+		// return jobBuilderFactory.get("job").start(step1()).next(step2()).build();
 		return jobBuilderFactory.get("job")
 				.incrementer(new RunIdIncrementer())// AFA added to generate different ids
 				.start(step3())
@@ -181,12 +219,12 @@ public class JobConfiguration {
 	private final String SAMPLE_DATA = "classpath:data_2.sql";
 	@Autowired
 	private DataSource datasource;
-
+	
 	@PostConstruct
 	public void loadIfInMemory() throws Exception {
 		ResourceLoader resourceLoader = new DefaultResourceLoader();
 		org.springframework.core.io.Resource resource = resourceLoader.getResource(SAMPLE_DATA);
 		ScriptUtils.executeSqlScript(datasource.getConnection(), resource);
 	}
-*/
+	*/
 }

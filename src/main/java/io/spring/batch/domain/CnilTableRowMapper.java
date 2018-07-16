@@ -23,7 +23,7 @@ import org.springframework.jdbc.core.RowMapper;
 import io.spring.batch.parametrage.CnilParametrageTable;
 
 /**
- * @author Michael Minella
+ * @author 
  */
 public class CnilTableRowMapper implements RowMapper<CnilParametrageTable> {
 	@Override
@@ -34,13 +34,12 @@ public class CnilTableRowMapper implements RowMapper<CnilParametrageTable> {
 				resultSet.getString("libelle"),
 				resultSet.getString("nom_table"),
 				resultSet.getString("nom_colonne"));
-		
-		
+
 		/*this.traitementTypeId = traitementTypeId;
 		this.processingType = processingType;
 		this.label = label;
 		this.tableName = tableName;
 		this.columnName = columnName;*/
-		
+
 	}
 }

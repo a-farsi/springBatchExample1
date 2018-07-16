@@ -21,21 +21,22 @@ import java.sql.SQLException;
 import org.springframework.jdbc.core.RowMapper;
 
 /**
- * @author Michael Minella
+ * @author 
  */
 public class AdministrateurRowMapper implements RowMapper<Administrateur> {
 	@Override
 	public Administrateur mapRow(ResultSet resultSet, int i) throws SQLException {
 		Administrateur admin = new Administrateur();
 
+		admin.setPassword(resultSet.getString("password"));
+		/*
 		admin.setNumeroEmetteur(resultSet.getInt("numeroEmetteur"));
 		admin.setLogin(resultSet.getString("login"));
-		admin.setPassword(resultSet.getString("password"));
 		admin.setCodeBqeRIB(resultSet.getString("codeBqeRIB"));
 		admin.setNumCpteRIB(resultSet.getString("numCpteRIB"));
 		admin.setCleRIB(resultSet.getString("cleRIB"));
 		admin.setDomiciliationRIB(resultSet.getString("domiciliationRIB"));
-
+		*/
 		return admin;
 	}
 }
