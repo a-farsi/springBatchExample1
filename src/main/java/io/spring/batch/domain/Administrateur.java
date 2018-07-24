@@ -104,17 +104,17 @@ public class Administrateur implements Serializable {
 		return true;
 	}
 
-	@Override
+	/*	@Override
 	public String toString() {
 		return "Administrateur \n [password=" + password + "]";
 	}
-	/*
-		@Override
-		public String toString() {
-			return "Administrateur \n ["
-					+ "login=" + login + ", password=" + password + ", codeBqeRIB=" + codeBqeRIB
-					+ ", codeGuichetRIB=" + codeGuichetRIB + ", numCpteRIB=" + numCpteRIB + ", cleRIB=" + cleRIB
-					+ ", domiciliationRIB=" + domiciliationRIB + ", numeroEmetteur=" + numeroEmetteur + "]";
-		}*/
+	*/
+	@Override
+	public String toString() {
+		return "Administrateur \n ["
+				+ "login=" + login + ", password=" + password + ", codeBqeRIB=" + codeBqeRIB
+				+ ", codeGuichetRIB=" + codeGuichetRIB + ", numCpteRIB=" + numCpteRIB + ", cleRIB=" + cleRIB
+				+ ", domiciliationRIB=" + domiciliationRIB + ", numeroEmetteur=" + numeroEmetteur + "]";
+	}
 
 }
