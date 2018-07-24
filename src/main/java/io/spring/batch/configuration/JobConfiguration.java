@@ -49,6 +49,7 @@ import io.spring.batch.domain.FilteringItemProcessor;
 import io.spring.batch.domain.Police;
 import io.spring.batch.domain.PoliceRowMapper;
 import io.spring.batch.parametrage.CnilParametrageTable;
+import io.spring.batch.purgetasklet.RemoveSpringBatchHistoryTasklet;
 
 /**
  * @author 
@@ -64,6 +65,9 @@ public class JobConfiguration {
 
 	@Autowired
 	public DataSource dataSource;
+
+	@Autowired
+	public RemoveSpringBatchHistoryTasklet removeSpringBatchHistoryTasklet;
 
 	private static final String WILL_BE_INJECTED = null;
 
@@ -238,6 +242,13 @@ public class JobConfiguration {
 				.build();
 	}
 
+	@Bean
+	public Step stepFinal() {
+		return stepBuilderFactory.get("stepFinal")
+				.tasklet(removeSpringBatchHistoryTasklet)
+				.build();
+	}
+
 	/*	@Bean
 		public Step step3() throws Exception {
 			return stepBuilderFactory.get("step3")
@@ -264,7 +275,7 @@ public class JobConfiguration {
 		// return jobBuilderFactory.get("job").start(step1()).next(step2()).build();
 		return jobBuilderFactory.get("jobPolice")
 				.incrementer(new RunIdIncrementer())// AFA added to generate different ids
-				.start(step2())
+				.start(step2()).next(stepFinal())
 				.build();
 	}
 
