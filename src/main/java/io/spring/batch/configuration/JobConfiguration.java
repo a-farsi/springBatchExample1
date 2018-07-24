@@ -260,9 +260,9 @@ public class JobConfiguration {
 	}
 
 	@Bean
-	public Job job() throws Exception {
+	public Job jobPolice() throws Exception {
 		// return jobBuilderFactory.get("job").start(step1()).next(step2()).build();
-		return jobBuilderFactory.get("job")
+		return jobBuilderFactory.get("jobPolice")
 				.incrementer(new RunIdIncrementer())// AFA added to generate different ids
 				.start(step2())
 				.build();
