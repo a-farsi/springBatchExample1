@@ -48,8 +48,7 @@ import io.spring.batch.domain.CustomerRowMapper;
 import io.spring.batch.domain.FilteringItemProcessor;
 import io.spring.batch.domain.Police;
 import io.spring.batch.domain.PoliceRowMapper;
-import io.spring.batch.parametrage.CnilParametrageTable;
-import io.spring.batch.purgetasklet.RemoveSpringBatchHistoryTasklet;
+import io.spring.batch.parametrage.TableParametrageCnil;
 
 /**
  * @author 
@@ -66,9 +65,10 @@ public class JobConfiguration {
 	@Autowired
 	public DataSource dataSource;
 
+	/*
 	@Autowired
 	public RemoveSpringBatchHistoryTasklet removeSpringBatchHistoryTasklet;
-
+	*/
 	private static final String WILL_BE_INJECTED = null;
 
 	@Bean
@@ -85,8 +85,8 @@ public class JobConfiguration {
 	}
 
 	@Bean
-	public JdbcCursorItemReader<CnilParametrageTable> cursorItemReaderForCnilParametrageTable() {
-		JdbcCursorItemReader<CnilParametrageTable> reader2 = new JdbcCursorItemReader<>();
+	public JdbcCursorItemReader<TableParametrageCnil> cursorItemReaderForCnilParametrageTable() {
+		JdbcCursorItemReader<TableParametrageCnil> reader2 = new JdbcCursorItemReader<>();
 
 		// reader.setSql("select id, firstName, lastName, birthdate from customer order
 		// by lastName, firstName");
@@ -242,12 +242,13 @@ public class JobConfiguration {
 				.build();
 	}
 
-	@Bean
+	/* @Bean
 	public Step stepFinal() {
 		return stepBuilderFactory.get("stepFinal")
 				.tasklet(removeSpringBatchHistoryTasklet)
 				.build();
 	}
+	*/
 
 	/*	@Bean
 		public Step step3() throws Exception {
@@ -275,7 +276,7 @@ public class JobConfiguration {
 		// return jobBuilderFactory.get("job").start(step1()).next(step2()).build();
 		return jobBuilderFactory.get("jobPolice")
 				.incrementer(new RunIdIncrementer())// AFA added to generate different ids
-				.start(step2()).next(stepFinal())
+				.start(step2())// .next(stepFinal())
 				.build();
 	}
 

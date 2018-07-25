@@ -20,15 +20,15 @@ import java.sql.SQLException;
 
 import org.springframework.jdbc.core.RowMapper;
 
-import io.spring.batch.parametrage.CnilParametrageTable;
+import io.spring.batch.parametrage.TableParametrageCnil;
 
 /**
  * @author 
  */
-public class CnilTableRowMapper implements RowMapper<CnilParametrageTable> {
+public class CnilTableRowMapper implements RowMapper<TableParametrageCnil> {
 	@Override
-	public CnilParametrageTable mapRow(ResultSet resultSet, int i) throws SQLException {
-		return new CnilParametrageTable(
+	public TableParametrageCnil mapRow(ResultSet resultSet, int i) throws SQLException {
+		return new TableParametrageCnil(
 				resultSet.getLong("id"),
 				resultSet.getString("type_traitement"),
 				resultSet.getString("libelle"),

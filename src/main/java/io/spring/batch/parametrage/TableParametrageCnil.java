@@ -5,11 +5,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Table;
 
 @Entity
-@Table(name = "table_parametrage_cnil")
-public class CnilParametrageTable {
+// @Table(name = "table_parametrage_cnil")
+public class TableParametrageCnil {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id")
@@ -27,11 +26,11 @@ public class CnilParametrageTable {
 	@Column(name = "nom_colonne")
 	private String columnName;
 
-	public CnilParametrageTable() {
+	public TableParametrageCnil() {
 		super();
 	}
 
-	public CnilParametrageTable(Long traitementTypeId, String processingType, String label, String tableName,
+	public TableParametrageCnil(Long traitementTypeId, String processingType, String label, String tableName,
 			String columnName) {
 		super();
 		this.traitementTypeId = traitementTypeId;

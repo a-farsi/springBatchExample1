@@ -14,7 +14,6 @@ import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
@@ -33,7 +32,7 @@ import org.springframework.util.StringUtils;
  * @author arey
  * 
  */
-@Component
+// @Component /*to see after*/
 public class RemoveSpringBatchHistoryTasklet implements Tasklet, InitializingBean {
 
 	/**
